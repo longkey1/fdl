@@ -1,0 +1,9 @@
+[general]
+port = "50088"
+download_path = "/home/moto/workspace/dlr/src/dlr/downloads"
+
+[slack]
+hook_url = "https://mocatona.slack.com/services/hooks/incoming-webhook?token=3atJHNNPVjICxoFPjk1keq4z"
+channel = "#moca-tona"
+username = "dldr"
+icon_emoji = ":heart:"
