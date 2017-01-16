@@ -1,3 +1,0 @@
-package: dldr
-import:
-- package: github.com/BurntSushi/toml

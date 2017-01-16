@@ -1,0 +1,9 @@
+[general]
+port = "50083"
+download_path = "/path/to/downloads"
+
+[slack]
+hook_url = "https://exmaple.slack.com/services/hooks/incoming-webhook?token=foobar"
+channel = "#foobar"
+username = "dlr"
+icon_emoji = ":arrow_down:"
