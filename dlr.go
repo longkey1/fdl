@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"flag"
-	"github.com/BurntSushi/toml"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -12,6 +11,8 @@ import (
 	"os"
 	"path/filepath"
 	"text/template"
+
+	"github.com/BurntSushi/toml"
 )
 
 type Config struct {
