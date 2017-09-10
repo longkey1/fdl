@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,43 +16,53 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
+const (
+	version = "0.1.0"
+)
+
+// Config ...
 type Config struct {
 	General GeneralConfig `toml:"general"`
-	Slack SlackConfig `toml:"slack"`
+	Slack   SlackConfig   `toml:"slack"`
 }
 
+// GeneralConfig ...
 type GeneralConfig struct {
-	Port string `toml:"port"`
+	Port         string `toml:"port"`
 	DownloadPath string `toml:"download_path"`
 }
 
+// SlackConfig ...
 type SlackConfig struct {
-	HookUrl string `toml:"hook_url"`
-	Channel string `toml:"channel"`
-	Username string `toml:"username"`
+	HookURL   string `toml:"hook_url"`
+	Channel   string `toml:"channel"`
+	Username  string `toml:"username"`
 	IconEmoji string `toml:"icon_emoji"`
 }
 
+// SlackMessage ...
 type SlackMessage struct {
-	Channel string `json:"channel"`
-	Username string `json:"username"`
-	Text string `json:"text"`
+	Channel   string `json:"channel"`
+	Username  string `json:"username"`
+	Text      string `json:"text"`
 	IconEmoji string `json:"icon_emoji"`
 }
 
+// SlackWriter ...
 type SlackWriter struct {
 }
 
-func (self SlackWriter) Write(p []byte) (int, error) {
+// Write ...
+func (w SlackWriter) Write(p []byte) (int, error) {
 	var text string
 	text = string(p[:])
 	jb, _ := json.Marshal(SlackMessage{
-		Channel: config.Slack.Channel,
-		Username: config.Slack.Username,
-		Text: text,
+		Channel:   config.Slack.Channel,
+		Username:  config.Slack.Username,
+		Text:      text,
 		IconEmoji: config.Slack.IconEmoji,
 	})
-	if _, err := http.Post(config.Slack.HookUrl, "application/json", bytes.NewReader(jb)); err != nil {
+	if _, err := http.Post(config.Slack.HookURL, "application/json", bytes.NewReader(jb)); err != nil {
 		return 0, err
 	}
 
@@ -63,10 +74,19 @@ var config Config
 func init() {
 	var configPath string
 	flag.StringVar(&configPath, "c", "config.tml", "configuration file path")
+	var displayVersion bool
+	flag.BoolVar(&displayVersion, "v", false, "display version")
 	flag.Parse()
+
+	if displayVersion {
+		fmt.Printf("urldl version %s\n", version)
+		os.Exit(0)
+	}
+
 	if _, err := toml.DecodeFile(configPath, &config); err != nil {
 		panic(err)
 	}
+
 	w := new(SlackWriter)
 	log.SetOutput(w)
 
@@ -76,11 +96,12 @@ func init() {
 
 func main() {
 	log.Println("start server")
-	http.ListenAndServe(":" + config.General.Port, nil)
+	http.ListenAndServe(":"+config.General.Port, nil)
 }
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
-	tpl, err := template.New("index").Parse(TEMPLATE_INDEX); if err != nil {
+	tpl, err := template.New("index").Parse(TemplateIndex)
+	if err != nil {
 		panic(err)
 	}
 	if err := tpl.Execute(w, map[string]string{
@@ -100,17 +121,20 @@ func download(src string, dst string) {
 	fn := getOutputFilename(src, dst)
 	log.Printf("download start: %s", fn)
 
-	resp, err := http.Get(src); if err != nil {
+	resp, err := http.Get(src)
+	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	body, err := ioutil.ReadAll(resp.Body); if err != nil {
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	file, err := os.OpenFile(filepath.Join(config.General.DownloadPath, fn), os.O_CREATE|os.O_WRONLY, 0666); if err != nil {
+	file, err := os.OpenFile(filepath.Join(config.General.DownloadPath, fn), os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
 		log.Println(err)
 	}
 	defer func() {
@@ -122,7 +146,8 @@ func download(src string, dst string) {
 }
 
 func getOutputFilename(src string, dst string) string {
-	u, err := url.Parse(src); if err != nil {
+	u, err := url.Parse(src)
+	if err != nil {
 		panic(err)
 	}
 	fn := u.Path
@@ -133,7 +158,7 @@ func getOutputFilename(src string, dst string) string {
 	return fn
 }
 
-const TEMPLATE_INDEX = `
+const TemplateIndex = `
 <!DOCTYPE html>
 <html>
   <head>
