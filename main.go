@@ -72,26 +72,31 @@ func (w SlackWriter) Write(p []byte) (int, error) {
 var config Config
 
 func init() {
-	var configPath string
-	flag.StringVar(&configPath, "c", "config.tml", "configuration file path")
-	var displayVersion bool
-	flag.BoolVar(&displayVersion, "v", false, "display version")
-	flag.Parse()
-
-	if displayVersion {
-		fmt.Printf("urldl version %s\n", version)
-		os.Exit(0)
-	}
-
-	if _, err := toml.DecodeFile(configPath, &config); err != nil {
-		panic(err)
-	}
+	checkVersion()
+	loadConfig()
 
 	w := new(SlackWriter)
 	log.SetOutput(w)
 
 	http.HandleFunc("/", mainHandler)
 	http.HandleFunc("/register", registerHandler)
+}
+
+func checkVersion() {
+	if len(os.Args) > 1 && os.Args[1] == "version" {
+		fmt.Printf("urldl version %s\n", version)
+		os.Exit(0)
+	}
+}
+
+func loadConfig() {
+	var path string
+	flag.StringVar(&path, "c", "config.tml", "configuration file path")
+	flag.Parse()
+
+	if _, err := toml.DecodeFile(path, &config); err != nil {
+		panic(err)
+	}
 }
 
 func main() {

@@ -28,6 +28,6 @@ release:
         zip -r ${GOPATH}/src/${CI_PROJECT_NAME}/${GLR_DIST_DIR}/${ARCHIVE_NAME}.zip ./${ARCHIVE_NAME}; \
       done; \
       popd
-    - glr -t ${GL_PRIVATE_TOKEN} ${CI_PROJECT_PATH} v$(./urldl -v | cut -d " " -f 3) ${GLR_DIST_DIR}
+    - glr -t ${GL_PRIVATE_TOKEN} ${CI_PROJECT_PATH} v$(./urldl version | cut -d " " -f 3) ${GLR_DIST_DIR}
   only:
     - master
