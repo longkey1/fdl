@@ -169,7 +169,7 @@ const TemplateIndex = `
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>dlr</title>
+    <title>fdl</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.6/slate/bootstrap.min.css">
     <link rel="shortcut icon" href="//cloud.githubusercontent.com/assets/58566/24833932/692bab5c-1d12-11e7-999b-ec96b97a5721.png">
   </head>
