@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	version = "0.1.0"
+	version = "0.1.1"
 )
 
 // Config ...
@@ -175,7 +175,7 @@ const TemplateIndex = `
   </head>
   <body>
     <div class="container">
-      <h1>dlr</h1>
+      <h1>fdl</h1>
       <form action="/register" method="get" role="form">
         <div class="form-group">
           <label for="inputdefault">SOURCE URL</label>
