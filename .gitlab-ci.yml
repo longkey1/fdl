@@ -12,7 +12,7 @@ release:
   stage: release
   variables:
     GOX_OS: "linux"
-    GOX_ARCH: "386 amd64"
+    GOX_ARCH: "amd64"
     GOX_DIST_DIR: "_dist-gox"
     GLR_DIST_DIR: "_dist-glr"
   script:
@@ -28,6 +28,6 @@ release:
         zip -r ${GOPATH}/src/${CI_PROJECT_NAME}/${GLR_DIST_DIR}/${ARCHIVE_NAME}.zip ./${ARCHIVE_NAME}; \
       done; \
       popd
-    - glr -t ${GL_PRIVATE_TOKEN} ${CI_PROJECT_PATH} v$(./urldl version | cut -d " " -f 3) ${GLR_DIST_DIR}
+    - glr -t ${GL_PRIVATE_TOKEN} ${CI_PROJECT_PATH} v$(./fdl version | cut -d " " -f 3) ${GLR_DIST_DIR}
   only:
     - master
