@@ -8,6 +8,7 @@ before_script:
   - cd ${GOPATH}/src/${CI_PROJECT_NAME}
   - dep ensure
 
+
 release:
   stage: release
   variables:
@@ -28,6 +29,8 @@ release:
         zip -r ${GOPATH}/src/${CI_PROJECT_NAME}/${GLR_DIST_DIR}/${ARCHIVE_NAME}.zip ./${ARCHIVE_NAME}; \
       done; \
       popd
+    - go get -u github.com/tcnksm/ghr
+    - ghr -t ${GITHUB_TOKEN} -u longkey1 -r fdl v$(./fdl version | cut -d " " -f 3) ${GLR_DIST_DIR}
     - glr -t ${GL_PRIVATE_TOKEN} ${CI_PROJECT_PATH} v$(./fdl version | cut -d " " -f 3) ${GLR_DIST_DIR}
   only:
     - master
