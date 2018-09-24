@@ -5,8 +5,11 @@ stages:
   - release
 
 variables:
+  COMMAND: "fdl"
   BIN_DIR: "${CI_PROJECT_DIR}/_bin"
   DIST_DIR: "${CI_PROJECT_DIR}/_dist"
+  GHR_USER: "longkey1"
+  GHR_REPO: "fdl-bin"
 
 build:
   stage: build
@@ -20,7 +23,7 @@ build:
     - cp -a ${CI_PROJECT_DIR} ${GOPATH}/src
     - cd ${GOPATH}/src/${CI_PROJECT_NAME}
     - dep ensure
-    - go build -o ${BIN_DIR}/fdl
+    - go build -o ${BIN_DIR}/${COMMAND}
     - gox -os="${GOX_OS}" -arch="${GOX_ARCH}" -output="tmp/{{.Dir}}_{{.OS}}_{{.Arch}}" ./...
     - |
       pushd tmp; \
@@ -41,7 +44,7 @@ release_github:
   script:
     - ls -al ${BIN_DIR}
     - ls -al ${DIST_DIR}
-    - ghr -t ${GITHUB_TOKEN} -u longkey1 -r fdl v$(${BIN_DIR}/fdl version | cut -d " " -f 3) ${DIST_DIR}
+    - ghr -t ${GITHUB_TOKEN} -u ${GHR_USER} -r ${GHR_REPO} v$(${BIN_DIR}/${COMMAND} version | cut -d " " -f 3) ${DIST_DIR}
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
@@ -56,7 +59,7 @@ release_gitlab:
   script:
     - ls -al ${BIN_DIR}
     - ls -al ${DIST_DIR}
-    - glr -t ${GITLAB_TOKEN} ${CI_PROJECT_PATH} v$(${BIN_DIR}/fdl version | cut -d " " -f 3) ${DIST_DIR}
+    - glr -t ${GITLAB_TOKEN} ${CI_PROJECT_PATH} v$(${BIN_DIR}/${COMMAND} version | cut -d " " -f 3) ${DIST_DIR}
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
